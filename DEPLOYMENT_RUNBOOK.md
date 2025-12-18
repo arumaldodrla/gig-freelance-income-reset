@@ -1,41 +1,70 @@
 # Deployment Runbook
 
-This document provides instructions for deploying and managing the Freelancer Invoicing & Gig Income Tracking application.
+**Version:** 1.1
 
-## 1. Environments
+This document provides the standard operating procedures for deploying the Gig/Freelance Income Reset application. The process is designed to be automated, reliable, and aligned with our business goals of rapid iteration and high availability.
 
-The application has three environments:
+## 1. Environments & Promotion Strategy
 
-- **`dev`:** For development and testing.
-- **`staging`:** A mirror of the production environment for QA and pre-production testing.
-- **`prod`:** The live production environment.
+The application uses a standard GitFlow-based promotion strategy across three distinct environments. This ensures stability in production while allowing for rapid development.
 
-Each environment has its own Supabase project and Vercel project.
+| Environment | Branch | Purpose | Key Characteristics |
+| :--- | :--- | :--- | :--- |
+| **`dev`** | `develop` | Development & Integration | Deployed automatically on every push to `develop`. Used for internal testing and validation. |
+| **`staging`** | `release/*` | Pre-Production QA | A mirror of production. Deployed when a `release` branch is created. Used for final QA, E2E testing, and stakeholder demos. |
+| **`prod`** | `main` | Live Production | Deployed only after a `release` branch is merged into `main`. **Requires manual approval.** |
 
-## 2. Environment Variables
+Each environment has its own dedicated Supabase project, Vercel project, and a corresponding set of secrets for Zoho and other third-party services.
 
-All environment variables, including API keys and secrets, are managed in the Vercel and Supabase secret stores. A full list of environment variables is maintained in the project's internal documentation.
+## 2. CI/CD Pipeline (GitHub Actions)
 
-## 3. Setup from Zero to Production
+The CI/CD pipeline is fully automated via GitHub Actions to support our 12-week MVP timeline and subsequent rapid iteration.
 
-1.  **Create Supabase and Vercel projects for each environment.**
-2.  **Configure the environment variables in each project.**
-3.  **Run the database migrations in the `dev` environment.**
-4.  **Deploy the application to the `dev` environment.**
-5.  **Test the application in the `dev` environment.**
-6.  **Promote the release to the `staging` environment.**
-7.  **Test the application in the `staging` environment.**
-8.  **Get human approval for the production deployment.**
-9.  **Deploy the application to the `prod` environment.**
+```mermaid
+graph TD
+    A[Push to `develop`] --> B{Run Tests & Lint};
+    B --> C[Deploy to `dev` on Vercel];
 
-## 4. CI/CD with Human Approval
+    D[Create `release/*` branch] --> E{Run Tests & Lint};
+    E --> F[Deploy to `staging` on Vercel];
 
-The CI/CD pipeline is managed using GitHub Actions. All pull requests to the `main` branch must be reviewed and approved by a human engineer. Production deployments require an additional manual approval step in the GitHub Actions workflow.
+    G[Merge `release/*` to `main`] --> H{Run Tests & Lint};
+    H --> I{Wait for Human Approval};
+    I --> J[Deploy to `prod` on Vercel];
+    J --> K[Run Smoke Tests];
+```
 
-## 5. Rollback Plan
+**Human Approval Gate:** The deployment to production is the only step that requires manual intervention. This is a critical control to prevent accidental or untested code from reaching users. The approval must be given by the designated Lead Engineer in the GitHub Actions UI.
 
-In the event of a failed deployment, the previous version of the application can be redeployed from the Vercel dashboard. The database can be restored from a backup if necessary.
+## 3. Zero-to-Production Setup
 
-## 6. Feature Flags
+This checklist outlines the process for bootstrapping a new environment from scratch.
 
-Feature flags are used to enable or disable features in the application without deploying new code. This allows for a gradual rollout of new features and provides a quick way to disable a feature if it is causing problems.
+1.  **Create Supabase Project:**
+    - Provision a new project in the Supabase dashboard.
+    - Run the latest database schema migrations from the `main` branch.
+    - Configure RLS policies.
+2.  **Create Vercel Project:**
+    - Create a new project linked to the GitHub repository.
+    - Set the framework to "Vite" and configure the root directory.
+3.  **Configure Secrets:**
+    - Create a new set of API keys for Zoho (CRM, Billing, etc.) for the new environment.
+    - Populate all required environment variables in both the Supabase and Vercel project settings. **Never commit secrets to the repository.**
+4.  **Initial Deployment:**
+    - Trigger a deployment in Vercel from the appropriate branch (`main` for prod, `develop` for dev).
+5.  **DNS & Domain:**
+    - For the `prod` environment, configure the custom domain and DNS records in Vercel.
+
+## 4. Rollback & Incident Response
+
+- **Frontend Rollback:** Vercel provides instant rollbacks. If a production deployment introduces a critical bug, the previous deployment can be instantly promoted to production via the Vercel dashboard. This is the primary rollback mechanism and should take < 1 minute.
+- **Backend Rollback:** Database changes are harder to roll back. All database migrations must be written to be backward-compatible. In a critical failure scenario, the database would be restored from the last known good backup (point-in-time recovery provided by Supabase).
+
+## 5. Feature Flags (LaunchDarkly / Vercel)
+
+New, high-risk features will be deployed to production behind feature flags. This allows us to:
+- Decouple deployment from release.
+- Perform canary releases to a small subset of users (e.g., internal team, beta testers).
+- Instantly disable a feature if it causes problems, without requiring a full rollback.
+
+This strategy is key to our goal of continuous delivery while maintaining a stable and reliable service for our users.

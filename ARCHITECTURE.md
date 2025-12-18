@@ -1,64 +1,73 @@
 # Architecture
 
-This document outlines the architecture of the Freelancer Invoicing & Gig Income Tracking application. It covers the system context, components, data flows, and key design decisions.
+**Version:** 1.1
 
-## 1. System Context Diagram
+This document outlines the architecture of the Gig/Freelance Income Reset application, aligning the technical strategy with the business goals of rapid, scalable, and cost-effective market entry.
+
+## 1. Architectural Principles & Business Alignment
+
+- **Speed to Market:** The architecture leverages a pre-integrated, serverless stack (Vercel, Supabase, Zoho) to enable a 12-week MVP launch and capture the first-mover advantage in the gig-economy niche.
+- **Low Operating Costs:** The choice of serverless components and a lean 3-developer team, augmented by AI, keeps initial infrastructure costs to an estimated ~$5,000 in Year 1, supporting an aggressive, organic-first GTM strategy.
+- **Scalability & Reliability:** The architecture is designed to scale from an initial 500 beta users to 100K+ active users in Year 2 without significant re-engineering, supporting the projected rapid growth.
+- **Security & Compliance by Design:** The architecture incorporates security and compliance from the ground up, a key differentiator and trust-builder in a market where users are sensitive about their financial data.
+
+## 2. System Context Diagram
 
 This diagram shows the overall system landscape and how the application interacts with external systems and users.
 
 ```mermaid
 graph TD
-    subgraph "Freelancer App"
-        A[Frontend - Vercel] --> B{Backend - Supabase};
+    subgraph "Gig/Freelance Income Reset Platform"
+        A[Frontend (Vercel)] --> B{Backend (Supabase)};
     end
 
     subgraph "Users"
-        C[Freelancer] --> A;
+        C[Freelancer/Gig Worker] --> A;
     end
 
-    subgraph "External Services"
-        B --> D[Zoho CRM];
-        B --> E[Zoho Billing];
-        B --> F[Zoho Books];
-        B --> G[Zoho Desk];
-        B --> H[Authorize.net];
-        B --> I[Fiverr, Upwork, etc.];
-        B --> J[Gemini Vision];
-        B --> K[LLM - Gemini/Claude/OpenAI];
-        B --> L[Resend/Zoho Mail];
+    subgraph "External Services & Integrations"
+        B --> D[Zoho CRM (Contacts)];
+        B --> E[Zoho Billing (Subscriptions)];
+        B --> F[Zoho Books (Accounting)];
+        B --> G[Zoho Desk (Support Tickets)];
+        B --> H[Authorize.net (Payments)];
+        B --> I[Gig Platforms (Fiverr, Upwork, etc.)];
+        B --> J[AI - Gemini Vision (OCR)];
+        B --> K[AI - LLM (Support & Insights)];
+        B --> L[Email (Resend/Zoho Mail)];
     end
 ```
 
-## 2. Component Diagram
+## 3. Component Diagram
 
 This diagram breaks down the system into its core components and their relationships.
 
 ```mermaid
 graph TD
     subgraph "Frontend (Vercel)"
-        A[React App - Refine] --> B(Supabase Auth);
+        A[React App - Refine/Tailwind] --> B(Supabase Auth);
         A --> C{Backend API - Supabase Edge Functions};
     end
 
     subgraph "Backend (Supabase)"
-        C --> D[PostgreSQL Database];
-        C --> E[Supabase Storage];
-        F[Supabase Cron] --> C;
+        C --> D[PostgreSQL Database (RLS Enforced)];
+        C --> E[Supabase Storage (Receipts)];
+        F[Supabase Cron (Scheduled Jobs)] --> C;
     end
 
-    subgraph "Integrations"
-        C --> G[Zoho Services];
-        C --> H[Authorize.net];
-        C --> I[Gig Platforms];
-        C --> J[AI Services];
+    subgraph "Integrations Layer"
+        C --> G[Zoho Services API Client];
+        C --> H[Authorize.net API Client];
+        C --> I[Gig Platform API Clients];
+        C --> J[AI Services API Client];
     end
 ```
 
-## 3. Data Flow Diagrams
+## 4. Data Flow Diagrams
 
-These diagrams illustrate the sequence of operations for key user flows.
+These diagrams illustrate the sequence of operations for key user flows, designed to be 100% automated.
 
-### a) Signup & Trial
+### a) New User Signup & Freemium Trial Activation
 
 ```mermaid
 sequenceDiagram
@@ -68,46 +77,16 @@ sequenceDiagram
     participant ZohoCRM
     participant ZohoBilling
 
-    User->>Frontend: Fills out signup form
-    Frontend->>Backend: Creates user
-    Backend->>ZohoCRM: Creates contact
+    User->>Frontend: Enters email/password for 15-day free trial
+    Frontend->>Backend: Calls signup endpoint
+    Backend->>Backend: Creates user in Supabase Auth
+    Backend->>ZohoCRM: Creates/tags contact as 'Trial'
     Backend->>ZohoBilling: Creates trial subscription
-    Backend-->>Frontend: Signup successful
-    Frontend-->>User: Navigates to dashboard
+    Backend-->>Frontend: Returns success, user is logged in
+    Frontend-->>User: Navigates to onboarding wizard
 ```
 
-### b) Connect Income Source
-
-```mermaid
-sequenceDiagram
-    participant User
-    participant Frontend
-    participant Backend
-
-    User->>Frontend: Selects income source
-    Frontend->>Backend: Initiates OAuth flow
-    Backend-->>Frontend: Redirects to provider
-    User->>Backend: Authorizes access
-    Backend->>Backend: Stores encrypted tokens
-    Backend-->>Frontend: Connection successful
-```
-
-### c) Scheduled Sync
-
-```mermaid
-sequenceDiagram
-    participant CronJob
-    participant Backend
-    participant ZohoBooks
-
-    CronJob->>Backend: Triggers sync
-    Backend->>Backend: Fetches data from platforms
-    Backend->>Backend: Normalizes and stores transactions
-    Backend->>ZohoBooks: Updates accounting data
-    Backend->>Backend: Recalculates tax summary
-```
-
-### d) Billing Upgrade
+### b) Upgrading to a Paid Plan
 
 ```mermaid
 sequenceDiagram
@@ -117,34 +96,19 @@ sequenceDiagram
     participant AuthorizeNet
     participant ZohoBilling
 
-    User->>Frontend: Clicks upgrade
-    Frontend->>AuthorizeNet: Displays hosted payment form
-    User->>AuthorizeNet: Enters card details
-    AuthorizeNet->>Backend: Returns payment token
-    Backend->>ZohoBilling: Updates payment method
-    Backend->>ZohoBilling: Activates subscription
-    Backend-->>Frontend: Upgrade successful
+    User->>Frontend: Selects 'Pro' plan and clicks 'Upgrade'
+    Frontend->>AuthorizeNet: Renders hosted payment form
+    User->>AuthorizeNet: Submits credit card details
+    AuthorizeNet->>Backend: Securely sends payment token
+    Backend->>ZohoBilling: Updates payment method with token
+    Backend->>ZohoBilling: Converts trial to active 'Pro' subscription
+    Backend->>ZohoCRM: Updates contact tag to 'Pro'
+    Backend-->>Frontend: Returns success
+    Frontend-->>User: Unlocks Pro features
 ```
 
-### e) AI Support Escalation
+## 5. Key Design Decisions & Trade-offs
 
-```mermaid
-sequenceDiagram
-    participant User
-    participant AI_Assistant
-    participant ZohoDesk
-
-    User->>AI_Assistant: "I need to talk to a human"
-    AI_Assistant->>ZohoDesk: Creates ticket with context
-    AI_Assistant-->>User: "A support ticket has been created."
-```
-
-## 4. Environment Separation
-
-The application will have three environments: `dev`, `staging`, and `prod`. Each environment will have its own separate Supabase project, Vercel project, and API keys. This ensures that development and testing activities do not impact the production environment.
-
-## 5. Key Design Decisions
-
-- **Zoho as System of Record:** Zoho will be the single source of truth for all customer-related data, including CRM, billing, and support. However, the user interface for these functions will be built into our platform to provide a seamless user experience.
-- **Authorize.net for Payments:** We will use Authorize.net for payment processing, leveraging their hosted payment forms to minimize our PCI-DSS scope. The primary integration path will be through Zoho Billing, with a direct integration as a fallback option if needed.
-- **AI-First Support:** The primary support channel will be an in-app AI assistant, with human support available as an escalation path.
+- **Zoho as the Business Backend:** This is a critical strategic decision. It offloads the immense complexity of billing, subscription management, and accounting, reducing our development scope by an estimated 60%. The trade-off is a dependency on the Zoho ecosystem, which is mitigated by abstracting all interactions behind our own API, preventing vendor lock-in at the UI level.
+- **Product-Led Growth Architecture:** The entire architecture is optimized for a self-service, freemium model. This minimizes the need for a sales team and reduces CAC to an industry-leading $10, a key driver of the projected 17x LTV:CAC ratio.
+- **AI-Augmented Development:** The use of Google Antigravity is a core part of the operational plan, enabling a lean 3-person team to achieve the productivity of a much larger one. This is a competitive advantage that allows for faster iteration and lower burn rate.
