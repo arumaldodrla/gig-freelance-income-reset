@@ -27,7 +27,13 @@ The Freelancer Financial Hub is a micro-SaaS platform designed to be the single 
 - **Primary:** Independent contractors, gig economy workers (Upwork, Fiverr, DoorDash, etc.), and self-employed professionals.
 - **Secondary:** Small business owners and households needing simple, collaborative invoice and payment management.
 
-## 4. Key Differentiators
+## 4. Core Principles
+
+- **Radical Simplicity, Powerful Features:** An intuitive, simple-to-use interface that masks a complex and powerful financial engine.
+- **AI-First Development & Maintenance:** 100% of the platform is built and maintained by AI agents, ensuring rapid, high-quality iteration.
+- **Built for a Global Audience:** Launches with English and Spanish, with an architecture designed for seamless, AI-assisted translation to any language.
+
+## 5. Key Differentiators
 
 - **Gig-Economy Native:** Built from the ground up for the unique challenges of platform-based work.
 - **Simplicity & Focus:** We do one thing exceptionally well: provide a clear, accurate picture of your freelance finances.

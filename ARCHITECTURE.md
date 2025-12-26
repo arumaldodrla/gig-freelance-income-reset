@@ -103,7 +103,22 @@ sequenceDiagram
     Frontend-->>User: Browser prompts to save PDF
 ```
 
-## 5. Key Design Decisions
+## 5. Internationalization (i18n) Architecture
+
+The frontend will be built using an i18n framework (e.g., `i18next`) from day one. All user-facing strings will be stored in JSON translation files.
+
+- **Initial Launch:** The `en.json` and `es.json` files will be created for English and Spanish.
+- **Future Translations:** An AI-powered workflow will be used to translate the `en.json` file into new languages, which can then be reviewed by a human translator.
+
+```mermaid
+graph TD
+    A[Frontend Code] --> B{i18next Library};
+    B --> C[en.json];
+    B --> D[es.json];
+    B --> E[fr.json ...];
+```
+
+## 6. Key Design Decisions
 
 - **Supabase as the Core:** Supabase is used for its integrated database, authentication, edge functions, and real-time capabilities. This simplifies the stack and allows the team to focus on application logic rather than infrastructure management.
 - **API-Driven Income Sync:** The primary method for income aggregation is via direct API integrations with gig platforms. This provides the most accurate and real-time data, directly addressing the core pain point of income visibility.

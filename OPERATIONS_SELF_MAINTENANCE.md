@@ -4,7 +4,14 @@
 
 This document outlines the automated operational procedures for the Freelancer Financial Hub. The system is designed to be self-monitoring and self-healing, allowing the team to focus on product development rather than operational firefighting.
 
-## 1. The Automated Weekly Health Check ("Sunday Checkup")
+## 1. The AI-Driven Weekly Self-Revision ("Sunday Checkup")
+
+Every Sunday at 02:00 UTC, a master AI agent will initiate a comprehensive self-revision process. This goes beyond a simple health check; it is an active process of self-improvement.
+
+### 1.1. Phase 1: Automated Health Check & Analysis
+
+The system first runs a series of automated checks, identical to a traditional health check, focusing on the core value propositions.
+
 
 Every Sunday at 02:00 UTC, a Supabase scheduled function (`weekly-health-check`) will execute a series of checks focused on the core value propositions of the product.
 
@@ -15,7 +22,20 @@ Every Sunday at 02:00 UTC, a Supabase scheduled function (`weekly-health-check`)
 | **Data Integrity** | - Check for orphaned records (e.g., `transactions` without a valid `user_id`).<br>- Ensure that all `expenses` have a valid category. | **Prevents Data Corruption.** Maintains the health and accuracy of the user's financial data, which is the core asset of the application. |
 | **Revenue Path** | - Ping Zoho Billing and Authorize.net APIs.<br>- Simulate a trial signup and an upgrade API call in a sandboxed test account. | **Prevents Revenue Loss.** Ensures our own business's monetization path is always open. |
 
-## 2. Automated Actions & Escalation Logic
+### 1.2. Phase 2: AI-Powered Code Revision
+
+Based on the analysis from Phase 1, a specialized AI agent will:
+
+- **Identify Minor Issues:** Look for small bugs, performance bottlenecks, or opportunities for code cleanup (e.g., refactoring a function, adding a missing test case).
+- **Generate Code Patches:** Automatically generate the code changes to address these minor issues.
+- **Create a Pull Request:** Create a PR against the `develop` branch with the proposed changes, titled `chore: AI weekly self-improvement`.
+
+### 1.3. Phase 3: Automated Deployment & Human Approval
+
+- **Minor Updates:** If the PR only contains minor, low-risk changes (e.g., documentation, test improvements, minor bug fixes), it will be **automatically merged and deployed** to the `dev` environment.
+- **Major Updates:** If the AI agent determines that a more significant change is needed (e.g., a change to the database schema, a new feature), it will create the PR but will **not** merge it. Instead, it will add a `human-review-required` label and create a task in the project management system for a human engineer to review and approve.
+
+## 2. Escalation Logic
 
 The system is empowered to take specific, safe actions automatically.
 

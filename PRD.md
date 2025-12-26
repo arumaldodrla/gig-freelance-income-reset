@@ -46,8 +46,14 @@
     - ...scan a photo of my lunch receipt and have it automatically categorized as a business meal.
     - ...receive an email reminder 30 days before my quarterly tax payment is due, telling me the exact amount to pay.
 
-## 5. Non-Functional Requirements
+## 5. Core Design Principles
+
+- **Simplicity & Power:** The user experience must be radically simple and intuitive. The complexity should be in our backend, not in the user's face. The user should feel empowered, not overwhelmed.
+- **100% AI Development:** This entire platform will be developed, maintained, and iterated upon by AI agents. The documentation and architecture must be structured to facilitate this.
+
+## 6. Non-Functional Requirements
 
 - **Data Accuracy:** The income aggregation and tax calculation must be extremely accurate. Data integrity is paramount.
 - **Security:** Handling highly sensitive financial data requires bank-level security, including end-to-end encryption and strict access controls.
 - **Performance:** The dashboard must load quickly, and sync jobs must be efficient to provide a near real-time view of a user's financial status.
+- **Internationalization (i18n):** The platform will launch with support for **English** and **Spanish**. The frontend architecture must use a standard i18n library (e.g., i18next) to allow for easy, AI-assisted translation into additional languages in the future.

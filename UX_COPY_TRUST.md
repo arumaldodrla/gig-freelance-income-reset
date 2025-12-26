@@ -4,7 +4,11 @@
 
 This document defines the user experience (UX) and communication strategy for the Freelancer Financial Hub. Our primary goal is to build a deep sense of trust and confidence, transforming financial anxiety into a feeling of control.
 
-## 1. Brand Voice: The Competent, Reassuring Advisor
+## 1. Core UX Principle: Radical Simplicity
+
+Our guiding principle is **Radical Simplicity**. The user should never have to think. The interface should be so intuitive that it feels like it's reading their mind. Every complex calculation, every data sync, every tax rule is handled by our powerful backend, but the user only sees a clean, calm, and simple interface. We absorb the complexity so the user doesn't have to.
+
+## 2. Brand Voice: The Competent, Reassuring Advisor
 
 Our brand voice is that of a knowledgeable, calm, and empowering financial advisor. We are not a cold, sterile spreadsheet; we are a partner in our users' financial success.
 

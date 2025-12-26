@@ -13,6 +13,7 @@ This document provides a definitive reference for the technology stack used to b
 | **Refine** | 4.x | A React-based framework that provides out-of-the-box components for authentication, data grids, and forms, accelerating development. |
 | **Tailwind CSS** | 3.x | A utility-first CSS framework for rapidly building custom designs. |
 | **Recharts** | 2.x | A composable charting library for building the data visualizations on the dashboard. |
+| **i18next** | 23.x | The internationalization framework for managing translations (English, Spanish, and future languages). |
 
 ## 2. Backend
 
