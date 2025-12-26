@@ -1,6 +1,6 @@
 # Architecture
 
-**Version:** 3.0
+**Version: 4.0**
 
 This document outlines the architecture for the Freelancer Financial Hub. The design is optimized to solve the five core pain points of freelancers by leveraging a modern, scalable, and AI-augmented tech stack.
 

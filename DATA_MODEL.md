@@ -1,6 +1,6 @@
 # Data Model
 
-**Version:** 3.0
+**Version: 4.0**
 
 This document defines the data model for the Freelancer Financial Hub. The model is optimized for aggregating financial transactions and providing the insights needed to solve the core freelancer pain points.
 

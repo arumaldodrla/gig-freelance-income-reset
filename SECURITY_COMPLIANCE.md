@@ -1,6 +1,6 @@
 # Security & Compliance
 
-**Version:** 3.0
+**Version: 4.0**
 
 This document outlines the security and compliance strategy for the Freelancer Financial Hub. Handling a user's complete income and expense history is a profound responsibility; therefore, security is our single most important product feature.
 

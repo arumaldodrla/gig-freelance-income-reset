@@ -1,76 +1,103 @@
 openapi: 3.1.0
 info:
-  title: Gig/Freelance Income Reset API
-  version: 1.1.0
-  description: API for the Gig/Freelance Income Reset application, designed to support a product-led growth model.
+  title: Freelancer Financial Hub API
+  version: 4.0
+  description: The official API for the Freelancer Financial Hub, providing services for income aggregation, expense tracking, and tax estimation.
+
 paths:
   /auth/signup:
     post:
-      summary: User Signup & Trial Activation
-      description: Creates a new user and activates a 15-day free trial.
+      summary: Register New User
+      description: Creates a new user account and a corresponding 15-day free trial subscription in Zoho Billing.
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                  format: email
-                password:
-                  type: string
-                  format: password
+              $ref: '#/components/schemas/AuthRequest'
       responses:
         '201':
-          description: User created and trial activated.
-  /subscriptions:
-    post:
-      summary: Upgrade Subscription
-      description: Upgrades a user's subscription to a paid plan.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                plan:
-                  type: string
-                  enum: [STARTER, PRO, PREMIUM]
-                payment_token:
-                  type: string
-      responses:
-        '200':
-          description: Subscription upgraded successfully.
+          description: User created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
   /income-sources:
     get:
       summary: List Income Sources
-      description: Retrieves a list of the user's connected income sources.
+      security:
+        - bearerAuth: []
       responses:
         '200':
-          description: A list of income sources.
+          description: A list of the user's connected income sources.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IncomeSource'
     post:
       summary: Connect Income Source
-      description: Connects a new income source to the user's account.
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                platform:
-                  type: string
-                credentials:
-                  type: object
+              $ref: '#/components/schemas/NewIncomeSource'
       responses:
         '201':
           description: Income source connected successfully.
+
+  /transactions:
+    get:
+      summary: List Income Transactions
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: A list of the user's income transactions.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Transaction'
+
+  /expenses:
+    get:
+      summary: List Expenses
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: A list of the user's expenses.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Expense'
+    post:
+      summary: Create Expense
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewExpense'
+      responses:
+        '201':
+          description: Expense created successfully.
+
   /expenses/scan:
     post:
       summary: Scan a Receipt (OCR)
-      description: Scans a receipt image to create an expense entry.
+      description: Uploads a receipt image to be scanned by AI, creating a new expense entry.
       security:
         - bearerAuth: []
       requestBody:
@@ -86,10 +113,28 @@ paths:
       responses:
         '201':
           description: Expense created from scanned receipt.
-  /support/tickets:
+
+  /tax-estimates:
+    get:
+      summary: Get Tax Estimates
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: The user's quarterly tax estimates for the current year.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaxEstimate'
+
+  /income-letter:
     post:
-      summary: Create Support Ticket
-      description: Creates a new support ticket in Zoho Desk when the AI assistant escalates.
+      summary: Generate Income Verification Letter
+      description: Generates and returns a professional PDF income verification letter for the user.
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -97,8 +142,122 @@ paths:
             schema:
               type: object
               properties:
-                conversation_history:
+                start_date:
                   type: string
+                  format: date
+                end_date:
+                  type: string
+                  format: date
       responses:
-        '201':
-          description: Support ticket created successfully.
+        '200':
+          description: A PDF file of the income verification letter.
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+
+    AuthRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+
+    IncomeSource:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        platform_name:
+          type: string
+        last_synced_at:
+          type: string
+          format: date-time
+
+    NewIncomeSource:
+      type: object
+      properties:
+        platform_name:
+          type: string
+        api_key:
+          type: string
+
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        description:
+          type: string
+        amount:
+          type: number
+        transaction_date:
+          type: string
+          format: date
+
+    Expense:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        vendor:
+          type: string
+        amount:
+          type: number
+        expense_date:
+          type: string
+          format: date
+        category:
+          type: string
+
+    NewExpense:
+      type: object
+      properties:
+        vendor:
+          type: string
+        amount:
+          type: number
+        expense_date:
+          type: string
+          format: date
+        category:
+          type: string
+
+    TaxEstimate:
+      type: object
+      properties:
+        year:
+          type: integer
+        quarter:
+          type: integer
+        estimated_tax_due:
+          type: number
+        due_date:
+          type: string
+          format: date

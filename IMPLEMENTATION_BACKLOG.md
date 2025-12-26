@@ -1,6 +1,6 @@
 # Implementation Backlog
 
-**Version:** 3.0
+**Version: 4.0**
 
 This document outlines the prioritized implementation backlog for the Freelancer Financial Hub, structured as a 12-week plan to deliver the Minimum Viable Product (MVP). The backlog is organized by the pain points it solves, ensuring a laser focus on delivering value to the user.
 

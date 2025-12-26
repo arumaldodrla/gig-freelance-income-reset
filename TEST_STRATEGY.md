@@ -1,6 +1,6 @@
 # Test Strategy
 
-**Version:** 3.0
+**Version: 4.0**
 
 This document outlines the testing strategy for the Freelancer Financial Hub. The primary goal is to ensure the absolute accuracy and reliability of the financial data and calculations we provide to our users.
 

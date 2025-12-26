@@ -1,6 +1,6 @@
 # UX, Copy, & Trust
 
-**Version:** 3.0
+**Version: 4.0**
 
 This document defines the user experience (UX) and communication strategy for the Freelancer Financial Hub. Our primary goal is to build a deep sense of trust and confidence, transforming financial anxiety into a feeling of control.
 

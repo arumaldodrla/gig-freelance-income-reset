@@ -1,6 +1,6 @@
-_# Product Requirements Document (PRD): The Freelancer Financial Hub
+# Product Requirements Document (PRD): Freelancer Financial Hub
 
-**Version:** 3.0
+**Version: 4.0**
 
 ## 1. Vision & Mission
 

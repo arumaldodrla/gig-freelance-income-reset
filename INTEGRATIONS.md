@@ -1,6 +1,6 @@
 # Integrations
 
-**Version:** 3.0
+**Version: 4.0**
 
 This document details the integration strategy for the Freelancer Financial Hub. The integrations are chosen to directly support the solutions for the five core freelancer pain points.
 

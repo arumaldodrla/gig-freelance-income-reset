@@ -1,6 +1,6 @@
 # Operations & Self-Maintenance
 
-**Version:** 3.0
+**Version: 4.0**
 
 This document outlines the automated operational procedures for the Freelancer Financial Hub. The system is designed to be self-monitoring and self-healing, allowing the team to focus on product development rather than operational firefighting.
 

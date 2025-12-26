@@ -1,8 +1,8 @@
-_# Privacy, GDPR, and DPIA
+# Privacy, GDPR, and DPIA
 
-**Version:** 1.1
+**Version:** 4.0
 
-This document outlines the privacy framework for the Gig/Freelance Income Reset application. Our approach to privacy is a core component of our brand identity, designed to build deep, lasting trust with our users.
+This document outlines the privacy framework for the **Freelancer Financial Hub**. Our approach to privacy is a core component of our brand identity, designed to build deep, lasting trust with our users.
 
 ## 1. Privacy as a Product Feature
 
